@@ -10,18 +10,18 @@ import platform
 @pytest.fixture
 def browser():
     chrome_options = Options()
-    # Eliminar la lnea siguiente para ver la ventana del navegador
-    # chrome_options.add_argument("--headless")
     chrome_options.add_argument("--no-sandbox")
     chrome_options.add_argument("--disable-dev-shm-usage")
     chrome_options.add_argument("--disable-gpu")
     chrome_options.add_argument("--window-size=1920,1080")
+    # Opcional: para ejecucin sin cabeza
+    chrome_options.add_argument("--headless")
 
-    if platform.system() == "Windows":
-        service = Service('D:/Disco Edinson/Downloads/chromedriver-win64/chromedriver.exe')
-    else:
-        service = Service('/usr/bin/chromedriver')
-    
+    # Ajustar la ruta segn el sistema operativo
+    driver_path = 'D:/Disco Edinson/Downloads/chromedriver-win64/chromedriver.exe'
+
+    service = Service(driver_path)
+
     driver = webdriver.Chrome(service=service, options=chrome_options)
     yield driver
     driver.quit()
