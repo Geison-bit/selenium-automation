@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
 
     services:
-      chrome:
+      selenium:
         image: selenium/standalone-chrome
         ports:
           - 4444:4444
@@ -33,5 +33,7 @@ jobs:
         pip install selenium pytest
 
     - name: Run tests
+      env:
+        SELENIUM_REMOTE_URL: http://localhost:4444/wd/hub
       run: |
         pytest test_google.py
