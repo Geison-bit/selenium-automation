@@ -1,21 +1,35 @@
 
 import pytest
-import time
 from selenium import webdriver
-from selenium.webdriver.common.by import By  # Importar By desde selenium.webdriver.common.by
-from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.options import Options
+import os
+import platform
 
 @pytest.fixture
 def browser():
-    driver = webdriver.Chrome()
+    chrome_options = Options()
+    # Eliminar la lnea siguiente para ver la ventana del navegador
+    # chrome_options.add_argument("--headless")
+    chrome_options.add_argument("--no-sandbox")
+    chrome_options.add_argument("--disable-dev-shm-usage")
+    chrome_options.add_argument("--disable-gpu")
+    chrome_options.add_argument("--window-size=1920,1080")
+
+    if platform.system() == "Windows":
+        service = Service('D:/Disco Edinson/Downloads/chromedriver-win64/chromedriver.exe')
+    else:
+        service = Service('/usr/bin/chromedriver')
+    
+    driver = webdriver.Chrome(service=service, options=chrome_options)
     yield driver
     driver.quit()
 
 def test_google_search(browser):
     browser.get('https://www.google.com/')
-    search_box = browser.find_element(By.NAME, 'q')  # Utilizar find_element con By.NAME
-    search_box.send_keys('pruebas automatizadas con DevOps')
-    search_box.send_keys(Keys.RETURN)
-    time.sleep(5)  # Esperar 5 segundos para ver los resultados
-    assert 'pruebas automatizadas con DevOps' in browser.title
+    search_box = browser.find_element(By.NAME, 'q')
+    search_box.send_keys('pruebas automatizadas con devops')
+    search_box.submit()
+    assert 'pruebas automatizadas con devops' in browser.title
 

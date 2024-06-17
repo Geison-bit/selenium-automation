@@ -9,14 +9,16 @@ on:
       - master
 
 jobs:
-  test:
+  build:
     runs-on: ubuntu-latest
 
     services:
-      selenium:
+      xvfb:
         image: selenium/standalone-chrome
-        ports:
-          - 4444:4444
+        options: >-
+          --name selenium-chrome
+          --shm-size 2g
+          --publish 4444:4444
 
     steps:
     - name: Checkout code
@@ -25,7 +27,7 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
-        python-version: '3.9'
+        python-version: 3.9
 
     - name: Install dependencies
       run: |
@@ -33,7 +35,6 @@ jobs:
         pip install selenium pytest
 
     - name: Run tests
-      env:
-        SELENIUM_REMOTE_URL: http://localhost:4444/wd/hub
       run: |
         pytest test_google.py
+
