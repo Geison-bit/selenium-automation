@@ -29,14 +29,17 @@ jobs:
       - name: Get Chrome version
         id: get-chrome
         run: |
-          echo "##[set-output name=chrome;]$(powershell (Get-Item 'C:\Program Files\Google\Chrome\Application\chrome.exe').VersionInfo.ProductVersion)"
+          $chrome_version = (Get-Item 'C:\Program Files\Google\Chrome\Application\chrome.exe').VersionInfo.ProductVersion
+          echo "Chrome version: $chrome_version"
+          echo "##[set-output name=chrome;]$chrome_version"
 
       - name: Download ChromeDriver
         run: |
-          CHROME_VERSION=$(echo "${{ steps.get-chrome.outputs.chrome }}" | cut -d'.' -f1)
-          echo "Chrome version: $CHROME_VERSION"
-          curl -L -o chromedriver.zip https://chromedriver.storage.googleapis.com/$CHROME_VERSION.0/chromedriver_win32.zip
-          unzip chromedriver.zip -d drivers
+          $chrome_version = "${{ steps.get-chrome.outputs.chrome }}"
+          $chrome_major_version = $chrome_version.Split('.')[0]
+          echo "Chrome major version: $chrome_major_version"
+          Invoke-WebRequest -Uri "https://chromedriver.storage.googleapis.com/$chrome_major_version.0/chromedriver_win32.zip" -OutFile "chromedriver.zip"
+          Expand-Archive -Path "chromedriver.zip" -DestinationPath "drivers"
 
       - name: Run tests
         run: |
