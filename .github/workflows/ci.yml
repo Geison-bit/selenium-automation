@@ -26,20 +26,19 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Get Chrome version
-        id: get-chrome
-        run: |
-          $chrome_version = (Get-Item 'C:\Program Files\Google\Chrome\Application\chrome.exe').VersionInfo.ProductVersion
-          echo "Chrome version: $chrome_version"
-          echo "##[set-output name=chrome;]$chrome_version"
+      - name: Install Google Chrome
+        run: choco install googlechrome --version=126.0.0.0
+        shell: cmd
 
-      - name: Download ChromeDriver
+      - name: Install ChromeDriver
+        run: choco install chromedriver --version=126.0.0.0 --force
+        shell: cmd
+
+      - name: Add ChromeDriver to PATH
         run: |
-          $chrome_version = "${{ steps.get-chrome.outputs.chrome }}"
-          $chrome_major_version = $chrome_version.Split('.')[0]
-          echo "Chrome major version: $chrome_major_version"
-          Invoke-WebRequest -Uri "https://chromedriver.storage.googleapis.com/$chrome_major_version.0/chromedriver_win32.zip" -OutFile "chromedriver.zip"
-          Expand-Archive -Path "chromedriver.zip" -DestinationPath "drivers"
+          $env:PATH = "${env:ProgramFiles(x86)}\Google\Chrome\Application;$env:PATH"
+          $env:PATH = "${env:ChocolateyInstall}\bin;$env:PATH"
+        shell: pwsh
 
       - name: Run tests
         run: |
