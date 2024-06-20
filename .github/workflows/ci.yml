@@ -27,11 +27,11 @@ jobs:
           pip install -r requirements.txt
 
       - name: Install Google Chrome
-        run: choco install googlechrome --version=126.0.0.0
+        run: choco install googlechrome --no-progress
         shell: cmd
 
       - name: Install ChromeDriver
-        run: choco install chromedriver --version=126.0.0.0 --force
+        run: choco install chromedriver --no-progress --force
         shell: cmd
 
       - name: Add ChromeDriver to PATH
