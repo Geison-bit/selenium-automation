@@ -5,6 +5,7 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 import logging
 import os
+import time
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -33,8 +34,18 @@ def test_localhost_login():
     driver.get("http://localhost:8080/login/index.html")
     assert "Login" in driver.title  # Ajusta esto según el título de tu página
 
-    # Mantener el navegador abierto para inspección manual
-    input("Presiona Enter para cerrar el navegador...")
-    
-    driver.quit()
+    try:
+        # Bucle para mantener el navegador abierto
+        while True:
+            time.sleep(1)
+            if not driver.window_handles:
+                break
+    except Exception as e:
+        logging.error(f"An error occurred: {e}")
+    finally:
+        driver.quit()
+        logging.debug("ChromeDriver closed successfully.")
+
+if __name__ == "__main__":
+    test_localhost_login()
 

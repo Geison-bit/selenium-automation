@@ -40,8 +40,22 @@ jobs:
           $env:PATH = "${env:ChocolateyInstall}\bin;$env:PATH"
         shell: pwsh
 
-      - name: Run tests
+      - name: Start local HTTP server
         run: |
-          pytest test_google.py
+          echo "Starting HTTP server..."
+          python -m http.server 8080 &
+        shell: cmd
+
+      - name: Wait for server to be ready
+        run: |
+          echo "Waiting for server to be ready..."
+          for i in {1..30}; do
+            powershell -Command "try { (New-Object System.Net.Sockets.TcpClient).Connect('localhost', 8080); exit 0 } catch { Start-Sleep -Seconds 1 }"
+            if ($? -eq 0) { break }
+          done
+        shell: bash
+
+      - name: Run tests
+        run: pytest test_google.py
         env:
           PATH: ${{ github.workspace }}\drivers;$PATH
