@@ -8,15 +8,16 @@ import os
 
 logging.basicConfig(level=logging.DEBUG)
 
-def test_google_search():
+def test_localhost_login():
     chrome_options = Options()
     chrome_options.add_argument("--no-sandbox")
     chrome_options.add_argument("--disable-dev-shm-usage")
     chrome_options.add_argument("--disable-gpu")
     chrome_options.add_argument("--window-size=1920,1080")
-    chrome_options.add_argument("--headless")
-    
-    # Obtener la ruta actual para asegurarse de la ubicacin
+    # Eliminar el modo headless para que el navegador sea visible
+    # chrome_options.add_argument("--headless")
+
+    # Obtener la ruta actual para asegurarse de la ubicación
     current_dir = os.getcwd()
     logging.debug(f"Current directory: {current_dir}")
 
@@ -29,7 +30,12 @@ def test_google_search():
     driver = webdriver.Chrome(service=service, options=chrome_options)
     logging.debug("ChromeDriver started successfully.")
     
-    driver.get("http://www.google.com")
-    assert "Google" in driver.title
+    # Abre la URL local
+    driver.get("http://localhost:8080/login/index.html")
+    
+    # Mantener el navegador abierto hasta que el usuario lo cierre manualmente
+    input("Presiona Enter para cerrar el navegador...")
+    
     driver.quit()
+
 
