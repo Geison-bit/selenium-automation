@@ -14,7 +14,7 @@ def test_localhost_login():
     chrome_options.add_argument("--disable-dev-shm-usage")
     chrome_options.add_argument("--disable-gpu")
     chrome_options.add_argument("--window-size=1920,1080")
-    # Eliminar el modo headless para que el navegador sea visible
+    # No usar headless para ver el navegador
     # chrome_options.add_argument("--headless")
 
     # Obtener la ruta actual para asegurarse de la ubicación
@@ -30,12 +30,11 @@ def test_localhost_login():
     driver = webdriver.Chrome(service=service, options=chrome_options)
     logging.debug("ChromeDriver started successfully.")
     
-    # Abre la URL local
     driver.get("http://localhost:8080/login/index.html")
-    
-    # Mantener el navegador abierto hasta que el usuario lo cierre manualmente
+    assert "Login" in driver.title  # Ajusta esto según el título de tu página
+
+    # Mantener el navegador abierto para inspección manual
     input("Presiona Enter para cerrar el navegador...")
     
     driver.quit()
-
 
