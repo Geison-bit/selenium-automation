@@ -51,8 +51,14 @@ jobs:
           echo "Waiting for HTTP server to start..."
           sleep 10
 
+      - name: Check HTTP server status
+        run: |
+          curl -I http://localhost:8080/login/index.html
+        shell: bash
+
       - name: Run tests
         run: |
           pytest test_google.py
         env:
           PATH: ${{ github.workspace }}\drivers;$PATH
+
