@@ -53,6 +53,7 @@ jobs:
 
       - name: Check HTTP server status
         run: |
+          echo "Checking HTTP server status..."
           curl -I http://localhost:8080/login/index.html
         shell: bash
 
@@ -61,4 +62,3 @@ jobs:
           pytest test_google.py
         env:
           PATH: ${{ github.workspace }}\drivers;$PATH
-
