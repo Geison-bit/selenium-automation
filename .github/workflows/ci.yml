@@ -54,7 +54,7 @@ jobs:
       - name: Check HTTP server status
         run: |
           echo "Checking HTTP server status..."
-          curl -I http://localhost:8080/login/index.html
+          curl -I http://localhost:8080/login/index.html || exit 1
         shell: bash
 
       - name: Run tests
